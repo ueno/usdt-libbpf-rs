@@ -7,9 +7,12 @@ edition = "2021"
 
 [dependencies]
 libbpf-rs = { git = "https://github.com/ueno/libbpf-rs.git", rev = "d88e9620077eb21e63b9997ac77220b4f5e3b139" }
+libbpf-async = { git = "https://github.com/ueno/libbpf-async.git", rev = "cf36817aa2fecf0fe1275c80e796727d2694c5c9" }
 clap = { version = "3", features=["derive"] }
 anyhow = "1.0"
 libc = "0.2"
+tokio = "1.21.2"
+tokio-uring = "0.3.0"
 
 [build-dependencies]
 libbpf-cargo = { git = "https://github.com/ueno/libbpf-rs.git", rev = "d88e9620077eb21e63b9997ac77220b4f5e3b139" }

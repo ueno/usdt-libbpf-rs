@@ -1,8 +1,7 @@
 use anyhow::{bail, Result};
 use clap::Parser;
-use libbpf_rs::RingBufferBuilder;
 use std::path::PathBuf;
-use std::time::Duration;
+use tokio::io::AsyncReadExt;
 
 mod usdt {
     include!(concat!(env!("OUT_DIR"), "/usdt.skel.rs"));
@@ -28,13 +27,8 @@ fn bump_memlock_rlimit() -> Result<()> {
     Ok(())
 }
 
-fn callback(data: &[u8]) -> i32 {
-    let value = u64::from_le_bytes(data.try_into().unwrap());
-    println!("callback {}", value);
-    0
-}
-
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     let cli = Cli::parse();
     bump_memlock_rlimit()?;
 
@@ -51,19 +45,18 @@ fn main() -> Result<()> {
         "function",
     )?;
 
-    let mut builder = RingBufferBuilder::new();
     let maps = skel.maps();
     let map = maps.ringbuf();
 
-    builder.add(map, callback)?;
-
-    let mgr = builder.build()?;
+    let mut rb = libbpf_async::RingBuffer::new(skel.obj.map_mut("ringbuf").unwrap());
 
     // Call getpid to ensure the BPF program runs
     unsafe { libc::getpid() };
 
-    mgr.consume()?;
     loop {
-        mgr.poll(Duration::from_millis(100))?;
+        let mut buf = [0; 8];
+        let n = rb.read(&mut buf).await.unwrap();
+        let value = u64::from_le_bytes(buf.try_into().unwrap());
+        println!("callback {}", value);
     }
 }
