@@ -22,7 +22,7 @@ record_first_arg (struct pt_regs *ctx)
   return 0;
 }
 
-SEC("usdt//home/ueno/devel/tests/dt/hello_usdt:provider:function")
+SEC("usdt")
 int BPF_USDT(usdt__trace) {
 	return record_first_arg(ctx);
 }

@@ -42,13 +42,14 @@ fn main() -> Result<()> {
     let open_skel = skel_builder.open()?;
     let mut skel = open_skel.load()?;
 
-    skel.attach()?;
-
-    // let mut progs = skel.progs_mut();
-    // let prog = progs.usdt__trace();
-    // let _link = prog.attach_usdt(
-    //     0, &cli.program, "provider", "function",
-    // )?;
+    let mut progs = skel.progs_mut();
+    let prog = progs.usdt__trace();
+    let _link = prog.attach_usdt(
+        -1, // any process
+        &cli.program,
+        "provider",
+        "function",
+    )?;
 
     let mut builder = RingBufferBuilder::new();
     let maps = skel.maps();
