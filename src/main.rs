@@ -2,6 +2,7 @@ use anyhow::{bail, Result};
 use clap::Parser;
 use std::path::PathBuf;
 use tokio::io::AsyncReadExt;
+use tokio_uring::fs::File;
 
 mod usdt {
     include!(concat!(env!("OUT_DIR"), "/usdt.skel.rs"));
@@ -27,8 +28,7 @@ fn bump_memlock_rlimit() -> Result<()> {
     Ok(())
 }
 
-#[tokio::main]
-async fn main() -> Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
     bump_memlock_rlimit()?;
 
@@ -45,18 +45,28 @@ async fn main() -> Result<()> {
         "function",
     )?;
 
-    let maps = skel.maps();
-    let map = maps.ringbuf();
-
-    let mut rb = libbpf_async::RingBuffer::new(skel.obj.map_mut("ringbuf").unwrap());
-
     // Call getpid to ensure the BPF program runs
     unsafe { libc::getpid() };
 
-    loop {
-        let mut buf = [0; 8];
-        let n = rb.read(&mut buf).await.unwrap();
-        let value = u64::from_le_bytes(buf.try_into().unwrap());
-        println!("callback {}", value);
-    }
+    tokio_uring::start(async {
+        let mut rb = libbpf_async::RingBuffer::new(skel.obj.map_mut("ringbuf").unwrap());
+        let file = File::create("usdt.log").await?;
+        let mut offset = 0u64;
+
+        loop {
+            let mut buf = [0; 8];
+            let n = rb.read(&mut buf).await?;
+            if n == 0 {
+                break;
+            }
+            let value = u64::from_le_bytes(buf.try_into().unwrap());
+            let v = format!("callback {}\n", value).as_bytes().to_vec();
+            let (res, _) = file.write_at(v, offset).await;
+            let n = res?;
+            offset += n as u64;
+        }
+
+        file.close().await?;
+        Ok(())
+    })
 }

@@ -300,6 +300,7 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 [[package]]
 name = "libbpf-async"
 version = "0.1.0"
+source = "git+https://github.com/ueno/libbpf-async.git?rev=cf36817aa2fecf0fe1275c80e796727d2694c5c9#cf36817aa2fecf0fe1275c80e796727d2694c5c9"
 dependencies = [
  "futures",
  "libbpf-rs",
