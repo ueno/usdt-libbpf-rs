@@ -3,15 +3,6 @@
 version = 3
 
 [[package]]
-name = "aho-corasick"
-version = "0.7.19"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4f55bd91a0978cbfd91c457a164bab8b4001c833b7f323132c0a4e1922dd44e"
-dependencies = [
- "memchr",
-]
-
-[[package]]
 name = "anyhow"
 version = "1.0.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -300,7 +291,7 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 [[package]]
 name = "libbpf-async"
 version = "0.1.0"
-source = "git+https://github.com/ueno/libbpf-async.git?rev=cf36817aa2fecf0fe1275c80e796727d2694c5c9#cf36817aa2fecf0fe1275c80e796727d2694c5c9"
+source = "git+https://github.com/ueno/libbpf-async.git?branch=wip/dueno/usdt#74779cf4d78a4547c9a496c12144fafbcbeb6e21"
 dependencies = [
  "futures",
  "libbpf-rs",
@@ -311,8 +302,8 @@ dependencies = [
 
 [[package]]
 name = "libbpf-cargo"
-version = "0.12.0"
-source = "git+https://github.com/ueno/libbpf-rs.git?rev=d88e9620077eb21e63b9997ac77220b4f5e3b139#d88e9620077eb21e63b9997ac77220b4f5e3b139"
+version = "0.13.1"
+source = "git+https://github.com/libbpf/libbpf-rs.git?rev=bf362ab6612959f2a89d4833b00023d1bd115c6d#bf362ab6612959f2a89d4833b00023d1bd115c6d"
 dependencies = [
  "anyhow",
  "cargo_metadata",
@@ -332,8 +323,8 @@ dependencies = [
 
 [[package]]
 name = "libbpf-rs"
-version = "0.18.0"
-source = "git+https://github.com/ueno/libbpf-rs.git?rev=d88e9620077eb21e63b9997ac77220b4f5e3b139#d88e9620077eb21e63b9997ac77220b4f5e3b139"
+version = "0.19.1"
+source = "git+https://github.com/libbpf/libbpf-rs.git?rev=bf362ab6612959f2a89d4833b00023d1bd115c6d#bf362ab6612959f2a89d4833b00023d1bd115c6d"
 dependencies = [
  "bitflags",
  "lazy_static",
@@ -347,9 +338,9 @@ dependencies = [
 
 [[package]]
 name = "libbpf-sys"
-version = "1.0.0+v1.0.0"
+version = "1.0.4+v1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1ac3b57422fd2678ecbcff6961dcb7caa4d5004191a7deac071a40082d5772b6"
+checksum = "6295785ed176d06d7a03595331cd89b986a0f4af84a7f35e8e745af9787f0b13"
 dependencies = [
  "cc",
  "pkg-config",
@@ -603,8 +594,6 @@ version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c4eb3267174b8c6c2f654116623910a0fef09c4753f8dd83db29c48a0df988b"
 dependencies = [
- "aho-corasick",
- "memchr",
  "regex-syntax",
 ]
 
